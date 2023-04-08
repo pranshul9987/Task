@@ -22,6 +22,10 @@ const facultySchema = mongoose.Schema({
   gender: {
     type: String,
   },
+  attendance:{
+    type: Number,
+    default: 0,
+  },
   designation: {
     type: String,
     required: true,

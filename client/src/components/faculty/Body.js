@@ -10,22 +10,36 @@ import { useSelector } from "react-redux";
 import Notice from "../notices/Notice";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ShowNotice from "../notices/ShowNotice";
-import { getAllStudent } from "../../redux/api";
+import { getAllStudent, getAttendanceFaculty, getSubjectbyDept, getTestByDept } from "../../redux/api";
 const Body = () => {
   const [value, onChange] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [openNotice, setOpenNotice] = useState({});
-  const [students,setStudents]=useState([]);
+  const [students, setStudents] = useState([]);
   const notices = useSelector((state) => state.admin.notices.result);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [classes,setClasses] = useState(0);
+  const [department,setDepartment] = useState(0);
+  const [test,setTest] = useState(0);
 
-  useEffect(()=>{
-   const fun= async ()=>{
-    let x=await getAllStudent();
-    console.log(x.data,"-----");
-   setStudents(x.data )
-    }
+  console.log(user);
+
+  useEffect(() => {
+    const fun = async () => {
+      let x = await getAllStudent();
+      setStudents(x.data);
+
+      let  y =await getAttendanceFaculty({facultyId:user.result._id});
+      setClasses(y.data.result)
+
+      let z = await getSubjectbyDept({department:user.result.department});
+      setDepartment(z.data.result.length);
+
+      let w = await getTestByDept({department:user.result.department});
+      setTest(w.data.result.length);
+    };
     fun();
-  },[])
+  }, []);
 
   return (
     <div className="flex-[0.8] mt-3">
@@ -43,7 +57,7 @@ const Body = () => {
               />
               <div className="flex flex-col">
                 <h1>Class</h1>
-                <h2 className="text-2xl font-bold">12</h2>
+                <h2 className="text-2xl font-bold">{classes}</h2>
               </div>
             </div>
             <div className="flex items-center space-x-4 border-r-2">
@@ -53,7 +67,13 @@ const Body = () => {
               />
               <div className="flex flex-col">
                 <h1>Student</h1>
-                <h2 className="text-2xl font-bold">{students?.filter((item)=>item.subjects?.indexOf("MA")!==-1).length}</h2>
+                <h2 className="text-2xl font-bold">
+                  {
+                    students?.filter(
+                      (item) => item.department === user.result.department
+                    )?.length
+                  }
+                </h2>
               </div>
             </div>
             <div className="flex items-center space-x-4 border-r-2">
@@ -63,7 +83,7 @@ const Body = () => {
               />
               <div className="flex flex-col">
                 <h1>Subject</h1>
-                <h2 className="text-2xl font-bold">5</h2>
+                <h2 className="text-2xl font-bold">{department}</h2>
               </div>
             </div>
             <div className="flex items-center space-x-4 ">
@@ -73,7 +93,7 @@ const Body = () => {
               />
               <div className="flex flex-col">
                 <h1>Test</h1>
-                <h2 className="text-2xl font-bold">3</h2>
+                <h2 className="text-2xl font-bold">{test}</h2>
               </div>
             </div>
           </div>
@@ -103,7 +123,8 @@ const Body = () => {
                         setOpen(true);
                         setOpenNotice(notice);
                       }}
-                      className="">
+                      className=""
+                    >
                       <Notice idx={idx} notice={notice} notFor="student" />
                     </div>
                   ))

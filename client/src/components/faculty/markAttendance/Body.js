@@ -62,15 +62,24 @@ const Body = () => {
 
   const uploadAttendance = (e) => {
     setError({});
+    // console.log(checkedValue,subjectName,value.department,value.year,value.section);
     dispatch(
       markAttendance(
         checkedValue,
         subjectName,
         value.department,
         value.year,
-        value.section
+        value.section,
+        user.result._id
       )
     );
+    setCheckedValue([]);
+    setSubjectName("");
+    setValue({
+      department: "",
+      year: "",
+      section: "",
+    });
   };
 
   useEffect(() => {

@@ -91,7 +91,7 @@ export const uploadMark =
   };
 
 export const markAttendance =
-  (checkedValue, subjectName, department, year, section) =>
+  (checkedValue, subjectName, department, year, section,facultyId) =>
   async (dispatch) => {
     try {
       const formData = {
@@ -100,6 +100,7 @@ export const markAttendance =
         department,
         year,
         section,
+        facultyId
       };
       const { data } = await api.markAttendance(formData);
       alert("Attendance Marked Successfully");

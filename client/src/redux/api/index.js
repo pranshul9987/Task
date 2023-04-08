@@ -85,6 +85,9 @@ export const getMarksStudent = (student) =>
 export const uploadMarks = (data) => API.post("/api/faculty/uploadmarks", data);
 export const markAttendance = (data) =>
   API.post("/api/faculty/markattendance", data);
+export const getAttendanceFaculty = (faculty) => API.post("/api/faculty/getattendance", faculty);
+export const getSubjectbyDept = (dept) => API.post("/api/faculty/getsubjectbydept", dept);
+export const getTestByDept = (dept) => API.post("/api/faculty/gettestbydept", dept);
 
 // Student
 

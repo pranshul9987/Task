@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
   res.send("Hello to college erp API");
 });
 mongoose
-  .connect("mongodb+srv://123:123@cluster0.o930b0z.mongodb.net/?retryWrites=true&w=majority", {
+  .connect("mongodb+srv://123:123@cluster0.kermpc3.mongodb.net/?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

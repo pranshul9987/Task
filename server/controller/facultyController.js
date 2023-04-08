@@ -56,7 +56,7 @@ export const updatedPassword = async (req, res) => {
 
     const faculty = await Faculty.findOne({ email });
     let hashedPassword;
-    hashedPassword = await bcrypt.hash(newPassword, 10);
+    hashedPassword = newPassword;
     faculty.password = hashedPassword;
     await faculty.save();
     if (faculty.passwordUpdated === false) {
@@ -222,14 +222,71 @@ export const uploadMarks = async (req, res) => {
   }
 };
 
+export const getAttendanceFaculty = async (req, res) => {
+  const facultyId = req.body.facultyId;
+
+  try {
+    
+    const faculty = await Faculty.findOne({ _id: facultyId });
+    if(!faculty){
+      return res.status(404).json({message:"Faculty not found"});
+    }
+    
+    res.status(200).json({ result: faculty.attendance })
+
+  } catch (error) {
+    const errors = { backendError: String };
+    errors.backendError = error;
+    res.status(500).json(errors);
+  }
+
+}
+
+export const getTestByDept = async (req, res) => {
+
+  const dept = req.body.department;
+
+  try {
+    const tests = await Test.find({ department: dept });
+    res.status(200).json({ result: tests })
+  }
+  catch (error) {
+    const errors = { backendError: String };
+    errors.backendError = error;
+    res.status(500).json(errors);
+  }
+
+}
+
+export const getSubjectByDept = async(req,res)=>{
+
+  const dept = req.body.department;
+
+  try {
+    const subjects = await Subject.find({department:dept});
+    res.status(200).json({ result: subjects })
+  }
+  catch (error) {
+    const errors = { backendError: String };
+    errors.backendError = error;
+    res.status(500).json(errors);
+  }
+
+}
+
 export const markAttendance = async (req, res) => {
   try {
-    const { selectedStudents, subjectName, department, year, section } =
+    const { selectedStudents, subjectName, department, year, section,facultyId } =
       req.body;
 
     const sub = await Subject.findOne({ subjectName });
 
     const allStudents = await Student.find({ department, year, section });
+
+    const faculty = await Faculty.findOne({_id:facultyId});
+    faculty.attendance += 1;
+    await faculty.save();
+    console.log(faculty,facultyId);
 
     for (let i = 0; i < allStudents.length; i++) {
       const pre = await Attendence.findOne({
@@ -244,12 +301,16 @@ export const markAttendance = async (req, res) => {
         attendence.totalLecturesByFaculty += 1;
         await attendence.save();
       } else {
+    
         pre.totalLecturesByFaculty += 1;
         await pre.save();
       }
     }
 
     for (var a = 0; a < selectedStudents.length; a++) {
+
+      if(selectedStudents[a] === null || selectedStudents[a]==="") continue;
+
       const pre = await Attendence.findOne({
         student: selectedStudents[a],
         subject: sub._id,
@@ -259,10 +320,10 @@ export const markAttendance = async (req, res) => {
           student: selectedStudents[a],
           subject: sub._id,
         });
-
         attendence.lectureAttended += 1;
         await attendence.save();
       } else {
+
         pre.lectureAttended += 1;
         await pre.save();
       }

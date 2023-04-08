@@ -56,7 +56,7 @@ export const updatedPassword = async (req, res) => {
 
     const student = await Student.findOne({ email });
     let hashedPassword;
-    hashedPassword = await bcrypt.hash(newPassword, 10);
+    hashedPassword = newPassword;
     student.password = hashedPassword;
     await student.save();
     if (student.passwordUpdated === false) {

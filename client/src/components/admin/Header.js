@@ -14,14 +14,9 @@ const Header = () => {
   return (
     <div className="flex-[0.05] flex justify-between items-center mx-5 my-2">
       <div className="flex items-center ">
-        <img
-          src="https://icon-library.com/images/cms-icon/cms-icon-11.jpg"
-          alt=""
-          className="h-7"
-        />
-        <h1 className="font-bold text-blue-600 text-sm">CMS</h1>
+      <h1 className="font-semibold text-black text-center w-full">Welcome</h1>
       </div>
-      <h1 className="font-semibold text-black">Welcome</h1>
+
       <div className="flex items-center space-x-3">
         <Avatar
           src={user.result.avatar}
